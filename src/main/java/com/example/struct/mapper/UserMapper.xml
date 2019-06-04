@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.example.struct.mapper.UserMapper">
+
+    <resultMap id="UserResult" type="com.example.struct.domain.User">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="birth" column="birth" jdbcType="DATE"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="UserResult" parameterType="String">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.struct.domain.User">
+        INSERT INTO user (id, name, birth) VALUES (#{id}, #{name}, #{birth});
+    </insert>
+
+</mapper>

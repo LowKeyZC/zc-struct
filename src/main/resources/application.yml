@@ -1,0 +1,58 @@
+#环境配置
+server:
+  # 服务端口
+  port: 80
+  servlet:
+    # 项目contextPath
+    context-path: "/zc-struct"
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # tomcat最大线程数，默认为200
+    max-threads: 800
+    # Tomcat启动初始化的线程数，默认值25
+    min-spare-threads: 30
+    #baseDir
+    basedir: "/data/struct-temp"
+
+spring:
+  application:
+    name: "zc-struct"
+
+  rabbitmq:
+    host: "127.0.0.1"
+    port: 5672
+    username: "guest"
+    password: "guest"
+    virtual-host: "/"
+
+  datasource:
+    initialize: false
+
+druid:
+    type: com.alibaba.druid.pool.DruidDataSource
+    master:
+        url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true
+        driver-class-name: com.mysql.jdbc.Driver
+        username: root
+        password: 123456
+        initial-size: 5
+        min-idle: 1
+        max-active: 100
+        test-on-borrow: true
+    slave:
+        url: jdbc:mysql://127.0.0.1:3306/test01?characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+        driver-class-name: com.mysql.jdbc.Driver
+        username: root
+        password: 123456
+        initial-size: 5
+        min-idle: 1
+        max-active: 100
+        test-on-borrow: true
+
+mybatis:
+  config-location: "classpath:mybatis/mybatis-config.xml"
+
+stone-exchange: stone-exchange
+#MQ消息队列
+hello_mq_key: hello_mq_key
