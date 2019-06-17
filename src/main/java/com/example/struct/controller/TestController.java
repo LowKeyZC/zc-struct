@@ -29,4 +29,10 @@ public class TestController {
         return "success";
     }
 
+    @RequestMapping(value = "test02")
+    public String test02() {
+        mqsender.send("hello");
+        return "success";
+    }
+
 }

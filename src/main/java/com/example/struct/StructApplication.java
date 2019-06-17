@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 //定时任务
 //@EnableScheduling
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class StructApplication {
 
 	public static void main(String[] args) {

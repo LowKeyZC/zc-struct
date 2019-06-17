@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HelloSender {
-	private static final String DEFAULT_EXCHANGE = PropertyUtils.getString("stone-exchange");
 
     private static final Logger log = LoggerFactory.getLogger(HelloSender.class);
     @Value("${hello_mq_key}")
@@ -31,7 +30,7 @@ public class HelloSender {
     public void send(Object object) {
     	try {
     		log.info("---------creater-------------开始加入 {} 队列", HELLO_MQ_KEY);
-    		amqpTemplate.convertAndSend(DEFAULT_EXCHANGE, HELLO_MQ_KEY, object);
+    		amqpTemplate.convertAndSend(HELLO_MQ_KEY, object);
     		log.info("---------creater-------------成功加入 {} 队列", HELLO_MQ_KEY);
     	} catch (Throwable e) {
 			log.error("---------creater-------------加入失败 {"+ HELLO_MQ_KEY +"} 队列",e);
