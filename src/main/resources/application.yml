@@ -28,17 +28,17 @@ spring:
 
   datasource:
     master:
-      jdbc-url: jdbc:mysql://localhost:3306/test
+      jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT
       username: root
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
     slave1:
-      jdbc-url: jdbc:mysql://localhost:3306/test-slave
+      jdbc-url: jdbc:mysql://localhost:3306/test-slave?serverTimezone=GMT
       username: root   # 只读账户
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
     slave2:
-      jdbc-url: jdbc:mysql://localhost:3306/test-slave1
+      jdbc-url: jdbc:mysql://localhost:3306/test-slave1?serverTimezone=GMT
       username: root   # 只读账户
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver

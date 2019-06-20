@@ -12,16 +12,16 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Value("${hello_mq_key}")
-    private String HELLO_MQ_KEY;
+    private String helloMqKey;
 
     @Bean
     public Queue helloQueue() {
-        return new Queue(HELLO_MQ_KEY);
+        return new Queue(helloMqKey);
     }
 
     @Bean
     public Binding bindingHelloQueue(Queue helloQueue) {
-        return BindingBuilder.bind(helloQueue).to(DirectExchange.DEFAULT).with(HELLO_MQ_KEY);
+        return BindingBuilder.bind(helloQueue).to(DirectExchange.DEFAULT).with(helloMqKey);
     }
     
 }

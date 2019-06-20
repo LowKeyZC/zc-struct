@@ -17,11 +17,11 @@ public class HelloReciever {
     private static final Logger logger = LoggerFactory.getLogger(HelloReciever.class);
     
     @Value("${hello_mq_key}")
-    private String HELLO_MQ_KEY;
+    private String helloMqKey;
 	
     @RabbitHandler
     public void process(String json) {
-    	logger.info("消费队列：" + HELLO_MQ_KEY + "正在消费");
+    	logger.info("消费队列：" + helloMqKey + "正在消费");
 
     	try {
     		logger.info(json);

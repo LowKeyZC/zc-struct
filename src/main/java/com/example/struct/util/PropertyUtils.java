@@ -9,7 +9,6 @@ import java.util.Properties;
  * 配置文件集成
  */
 public class PropertyUtils {
-    private static String propUrl = "prop.properties";
     private static Properties prop = new Properties();
 
     public static String getString(String name) {
@@ -18,6 +17,7 @@ public class PropertyUtils {
 
     static {
         try {
+            String propUrl = "prop.properties";
             InputStream in = (new ClassPathResource(propUrl)).getInputStream();
             prop.load(in);
             in.close();

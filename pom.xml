@@ -101,4 +101,18 @@
 		</plugins>
 	</build>
 
+	<!--配置发布信息 -->
+	<distributionManagement>
+		<repository>
+			<id>test</id>
+			<name>test</name>
+			<url>http://127.0.0.1:8081/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>test</id>
+			<name>test</name>
+			<url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 </project>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.struct.domain.User;
 import com.example.struct.rabbitmq.sender.HelloSender;
 import com.example.struct.service.UserService;
+import com.example.struct.util.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class TestController {
         LOGGER.info("TEST");
         User user = userService.selectById("123456");
         System.out.println(JSON.toJSONString(user));
+        System.out.println("valid-token=" + PropertyUtils.getString("valid-token"));
         return "success";
     }
 
