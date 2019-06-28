@@ -614,11 +614,8 @@ public class RedisClientTool {
      * @return Object
      */
     public static Object execute(String domain, Command command) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return command.run(jedis);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -634,12 +631,9 @@ public class RedisClientTool {
      * @return
      */
     public static boolean distributeLock(String domain,String requestId) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             String result = jedis.set(DIS_LOCK, requestId, SET_IF_NOT_EXIST, MILL_SECOND, 5000);
             return LOCK_SUCCESS.equals(result);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -649,13 +643,10 @@ public class RedisClientTool {
      * @param requestId
      */
     public static void releaseLock(String domain, String requestId) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             if (jedis.get(DIS_LOCK).equals(requestId)) {
                 jedis.del(DIS_LOCK);
             }
-        } finally {
-            jedis.close();
         }
     }
 

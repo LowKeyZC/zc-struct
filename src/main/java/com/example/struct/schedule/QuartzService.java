@@ -40,9 +40,13 @@ import java.util.concurrent.ScheduledFuture;
  "0 15 10 ? * 6L" 每月的最后一个星期五上午10:15触发
  "0 15 10 ? * 6L 2002-2005" 2002年至2005年的每月的最后一个星期五上午10:15触发
  "0 15 10 ? * 6#3" 每月的第三个星期五上午10:15触发
+ * @author zhouchao
  */
 @Component
 public class QuartzService {
+
+    public static ScheduledFuture dynamicTaskFuture1;
+    public static ScheduledFuture dynamicTaskFuture2;
 
     /**
      * 通过redis分布式锁实现定时任务只执行一次

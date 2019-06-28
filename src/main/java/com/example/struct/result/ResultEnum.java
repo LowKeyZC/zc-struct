@@ -37,6 +37,11 @@ public enum ResultEnum {
      */
     NOBOOK("1004", "未找到图书"),
 
+    /**
+     * 改任务已经启动了
+     */
+    TaskStarted("1005", "任务已经启动了"),
+
     ;
 
     private String code;
