@@ -1,12 +1,10 @@
 package com.example.struct.util;
 
 import com.example.struct.enums.RedisDomainEnum;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,34 +23,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RedisClientTool {
 
     /**
-     * 默认业务jedis
-     */
-    protected static String defaultDomain;
-    /**
      * 个业务连接池存储器
      */
-    private static Map<String, ShardedJedisPool> jedisPoolMap = new ConcurrentHashMap<String, ShardedJedisPool>();
+    private static final Map<String, ShardedJedisPool> JEDIS_POOL_MAP = new ConcurrentHashMap<>();
     /**
      * 加载配置
      */
     private static Properties prop = new Properties();
 
     static {
-        InputStream inputStream = RedisClientTool.class.getClassLoader()
-                .getResourceAsStream("redis/redis.txt");
-        try {
+        try (InputStream inputStream = RedisClientTool.class.getClassLoader()
+                .getResourceAsStream("redis/redis.txt")) {
             prop.load(inputStream);
 
-            defaultDomain = prop.getProperty("defaultDomain");
+            /*
+              默认业务jedis
+             */
+            String defaultDomain = prop.getProperty("defaultDomain");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
@@ -60,19 +49,19 @@ public class RedisClientTool {
      * 获取指定业务的连接池
      *
      * @param domain 指定业务
-     * @return
+     * @return ShardedJedisPool
      */
-    public static ShardedJedisPool getJedisPool(String domain) {
+    private static ShardedJedisPool getJedisPool(String domain) {
 
         //存在直接返回
-        ShardedJedisPool jedisPool = jedisPoolMap.get(domain);
+        ShardedJedisPool jedisPool = JEDIS_POOL_MAP.get(domain);
         if (jedisPool != null) {
             return jedisPool;
         }
 
         //否则创建
-        synchronized (jedisPoolMap) {
-            jedisPool = jedisPoolMap.get(domain);
+        synchronized (JEDIS_POOL_MAP) {
+            jedisPool = JEDIS_POOL_MAP.get(domain);
             if (jedisPool != null) {
                 return jedisPool;
             }
@@ -99,7 +88,7 @@ public class RedisClientTool {
             shards.add(si);
             jedisPool = new ShardedJedisPool(new JedisPoolConfig(), shards);
 
-            jedisPoolMap.put(domain, jedisPool);
+            JEDIS_POOL_MAP.put(domain, jedisPool);
 
             return jedisPool;
         }
@@ -115,11 +104,8 @@ public class RedisClientTool {
      * @param key    键
      */
     public static String get(String domain, String key) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.get(key);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -133,11 +119,8 @@ public class RedisClientTool {
      * @param value  值
      */
     public static String set(String domain, String key, String value) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.set(key, value);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -152,11 +135,8 @@ public class RedisClientTool {
      * @param expireSeconds 到期时间
      */
     public static String setex(String domain, String key, String value, int expireSeconds) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.setex(key, expireSeconds, value);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -169,11 +149,8 @@ public class RedisClientTool {
      * @param key    键
      */
     public static Long del(String domain, String key) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.del(key);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -186,11 +163,8 @@ public class RedisClientTool {
      * @param key    键
      */
     public static boolean exists(String domain, String key) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.exists(key);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -201,11 +175,8 @@ public class RedisClientTool {
      * @param key    键
      */
     public static Long expire(String domain, String key, int expiredSeconds) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.expire(key, expiredSeconds);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -219,11 +190,8 @@ public class RedisClientTool {
      * @param field  域
      */
     public static String hget(String domain, String key, String field) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.hget(key, field);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -237,11 +205,8 @@ public class RedisClientTool {
      * @param value  值
      */
     public static Long hset(String domain, String key, String field, String value) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.hset(key, field, value);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -254,11 +219,8 @@ public class RedisClientTool {
      * @param key    键
      */
     public static Long hdel(String domain, String key, String field) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        try {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
             return jedis.hdel(key, field);
-        } finally {
-            jedis.close();
         }
     }
 
@@ -270,27 +232,15 @@ public class RedisClientTool {
      * @param domain 业务redis名称
      * @param key    键
      */
-    public static <T> T get(String domain, String key, Class<T> clazz) {
-        ShardedJedis jedis = getJedisPool(domain).getResource();
-        ObjectInputStream objectInputStream = null;
-        try {
-            byte[] data = jedis.get(key.getBytes("UTF-8"));
+    public static <T> T get(String domain, String key, Class<T> clazz) throws IOException, ClassNotFoundException {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
+            ObjectInputStream objectInputStream = null;
+            byte[] data = jedis.get(key.getBytes(StandardCharsets.UTF_8));
             if (data == null) {
                 return null;
             }
             objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
             return (T) objectInputStream.readObject();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            jedis.close();
-            if (objectInputStream != null) {
-                try {
-                    objectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -390,7 +340,7 @@ public class RedisClientTool {
             objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(value);
             objectOutputStream.flush();
-            return jedis.set(key.getBytes("UTF-8"), byteArrayOutputStream.toByteArray());
+            return jedis.set(key.getBytes(StandardCharsets.UTF_8), byteArrayOutputStream.toByteArray());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

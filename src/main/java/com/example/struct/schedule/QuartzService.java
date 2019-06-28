@@ -5,13 +5,16 @@ import com.example.struct.util.RedisClientTool;
 import com.example.struct.util.StringUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * 配置说明:https://www.cnblogs.com/linjiqin/archive/2013/07/08/3178452.html
@@ -45,7 +48,7 @@ public class QuartzService {
      * 通过redis分布式锁实现定时任务只执行一次
      * @throws InterruptedException
      */
-    @Scheduled(cron = "0/3 * * * * ?") //每隔3秒触发一次
+    //@Scheduled(cron = "0/3 * * * * ?") //每隔3秒触发一次
     public void task01() throws InterruptedException{
         System.out.println("=====进入task01");
         String requestId = StringUtils.getRandomId();
@@ -61,6 +64,26 @@ public class QuartzService {
             System.out.println("=====task01释放锁");
         } else {
             System.out.println("抢锁失败！");
+        }
+    }
+
+    /**
+     * 动态定时任务运行实例1
+     */
+    public static class MyRunnable1 implements Runnable {
+        @Override
+        public void run() {
+            System.out.println("动态定时任务运行实例1,time=" + new Date());
+        }
+    }
+
+    /**
+     * 动态定时任务运行实例2
+     */
+    public static class MyRunnable2 implements Runnable {
+        @Override
+        public void run() {
+            System.out.println("动态定时任务运行实例2,time=" + new Date());
         }
     }
 

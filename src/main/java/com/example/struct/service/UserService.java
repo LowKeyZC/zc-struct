@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -18,6 +20,10 @@ public class UserService {
 
     public User selectById(String id) {
         return userMapper.selectById(id);
+    }
+
+    public List<User> selectByBirthDay() {
+        return userMapper.selectNowBirthDay();
     }
 
     public void insertUser(User user) {

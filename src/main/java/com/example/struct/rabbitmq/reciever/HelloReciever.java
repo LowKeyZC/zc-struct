@@ -7,6 +7,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 消费消息
  */
@@ -27,7 +30,6 @@ public class HelloReciever {
     		logger.info(json);
     	} catch (Exception e) {
     		e.printStackTrace();
-    		return;
     	}
 	}
 

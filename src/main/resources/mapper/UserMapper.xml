@@ -6,15 +6,20 @@
     <resultMap id="UserResult" type="com.example.struct.domain.User">
         <id property="id" column="id" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="birth" column="birth" jdbcType="DATE"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="birthday" column="birthday" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <select id="selectById" resultMap="UserResult" parameterType="String">
         SELECT * FROM user WHERE id = #{id}
     </select>
 
+    <select id="selectNowBirthDay" resultMap="UserResult" parameterType="Date">
+        SELECT * FROM user where birthday = DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+    </select>
+
     <insert id="insertUser" parameterType="com.example.struct.domain.User">
-        INSERT INTO user (id, name, birth) VALUES (#{id}, #{name}, #{birth});
+        INSERT INTO user (id, name, age, birthday) VALUES (#{id}, #{name}, #{age},#{birthday});
     </insert>
 
 </mapper>

@@ -13,7 +13,7 @@ server:
     # Tomcat启动初始化的线程数，默认值25
     min-spare-threads: 30
     #baseDir
-    basedir: "/data/struct-temp"
+    basedir: "/data/zc-struct"
 
 spring:
   application:
@@ -42,9 +42,6 @@ spring:
       username: root   # 只读账户
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
-
-mybatis:
-  config-location: "classpath:mybatis-config.xml"
 
 #MQ消息队列
 hello_mq_key: hello_mq_key

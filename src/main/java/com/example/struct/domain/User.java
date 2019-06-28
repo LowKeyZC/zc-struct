@@ -1,11 +1,12 @@
 package com.example.struct.domain;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class User {
     private String id;
     private String name;
-    private Date birth;
+    private int age;
+    private Date birthday;
 
     public String getId() {
         return id;
@@ -23,12 +24,20 @@ public class User {
         this.name = name;
     }
 
-    public Date getBirth() {
-        return birth;
+    public int getAge() {
+        return age;
     }
 
-    public void setBirth(Date birth) {
-        this.birth = birth;
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public static void main(String[] args) {
