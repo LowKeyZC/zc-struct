@@ -1,5 +1,7 @@
 package com.example.struct.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +39,35 @@ public class DateUtil {
         return calendar.getTime();
     }
 
-    public static void main(String[] args) {
-        System.out.println(dateOffset(new Date(), 24 * 60 * 60));
+    /**
+     * 判断当前时间在输入时间之间，支持:yyyy/MM/dd HH:mm:ss, HH:mm:ss, yyyy/MM/dd
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     * @throws ParseException
+     */
+    public static boolean isBetweenTime(String startTime, String endTime) throws ParseException {
+        Calendar now = Calendar.getInstance();
+        String formatStr;
+        if (startTime.length() == 19) {
+            formatStr = "yyyy/MM/dd HH:mm:ss";
+        } else if (startTime.length() == 8) {
+            formatStr = "HH:mm:ss";
+        } else if (startTime.length() == 10){
+            formatStr = "yyyy/MM/dd";
+        } else {
+            return false;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+        now.setTime(sdf.parse(sdf.format(new Date())));
+        Calendar start = Calendar.getInstance();
+        start.setTime(sdf.parse(startTime));
+        Calendar end = Calendar.getInstance();
+        end.setTime(sdf.parse(endTime));
+        return now.after(start) && now.before(end);
+    }
+
+    public static void main(String[] args) throws ParseException {
+        System.out.println(isBetweenTime("2019/06/11", "2019/06/16"));
     }
 }

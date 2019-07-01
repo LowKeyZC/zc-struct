@@ -12,6 +12,8 @@ import redis.clients.jedis.JedisPool;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -45,14 +47,14 @@ import java.util.concurrent.ScheduledFuture;
 @Component
 public class QuartzService {
 
-    public static ScheduledFuture dynamicTaskFuture1;
-    public static ScheduledFuture dynamicTaskFuture2;
+    // 动态定时任务运行结果Map,用于根据任务名动态停止定时任务
+    public static Map<String, ScheduledFuture> scheduledFutureMap = new HashMap<>();
 
     /**
      * 通过redis分布式锁实现定时任务只执行一次
      * @throws InterruptedException
      */
-    //@Scheduled(cron = "0/3 * * * * ?") //每隔3秒触发一次
+    @Scheduled(cron = "0/3 * * * * ?") //每隔3秒触发一次
     public void task01() throws InterruptedException{
         System.out.println("=====进入task01");
         String requestId = StringUtils.getRandomId();

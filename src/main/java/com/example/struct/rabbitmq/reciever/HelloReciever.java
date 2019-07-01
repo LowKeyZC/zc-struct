@@ -1,5 +1,8 @@
 package com.example.struct.rabbitmq.reciever;
 
+import com.alibaba.fastjson.JSON;
+import com.example.struct.common.Constant;
+import com.example.struct.common.MqDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -14,20 +17,24 @@ import java.util.List;
  * 消费消息
  */
 @Component
-@RabbitListener(queues = "${hello_mq_key}")
+@RabbitListener(queues = Constant.LOCAL_COMMON_QUEUE)
 public class HelloReciever {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloReciever.class);
     
-    @Value("${hello_mq_key}")
-    private String helloMqKey;
+    private static final String LOCAL_COMMON_QUEUE = Constant.LOCAL_COMMON_QUEUE;
 	
     @RabbitHandler
-    public void process(String json) {
-    	logger.info("消费队列：" + helloMqKey + "正在消费");
+    public void process(String mqDtoStr) {
+    	logger.info("消费队列：" + LOCAL_COMMON_QUEUE + "正在消费");
 
     	try {
-    		logger.info(json);
+			MqDto mqDto = JSON.parseObject(mqDtoStr, MqDto.class);
+			if (mqDto.getMsgType().equals(Constant.MQ_TYPE_ONE)) {
+				System.out.println("receive mq type one");
+			} else {
+				System.out.println("receive mq type two");
+			}
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

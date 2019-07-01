@@ -1,5 +1,6 @@
 package com.example.struct.rabbitmq.sender;
 
+import com.example.struct.common.MqDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,11 @@ public class HelloSenderTest {
     @Autowired
     private HelloSender helloSender;
 
-    @Test
+    /*@Test
     public void send() {
-        helloSender.send("hello rabbit");
-    }
+        MqDto mqDto = new MqDto();
+        mqDto.setMsgType(1);
+        mqDto.setData("aaa");
+        helloSender.send(mqDto);
+    }*/
 }

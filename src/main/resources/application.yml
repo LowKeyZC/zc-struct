@@ -44,4 +44,4 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
 
 #MQ消息队列
-hello_mq_key: hello_mq_key
+#hello_mq_key: hello_mq_key

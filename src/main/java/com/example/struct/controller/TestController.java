@@ -1,6 +1,8 @@
 package com.example.struct.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.example.struct.common.Constant;
+import com.example.struct.common.MqDto;
 import com.example.struct.domain.User;
 import com.example.struct.rabbitmq.sender.HelloSender;
 import com.example.struct.service.UserService;
@@ -39,12 +41,12 @@ public class TestController {
 
     @RequestMapping(value = "test02")
     public String test02() {
-        //当天0点
-        long zero = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
-        Date date = new Date(zero/1000*1000);
-        System.out.println(date);
-        List<User> userList = userService.selectByBirthDay();
-        System.out.println(JSON.toJSONString(userList));
+        User user = new User();
+        user.setId("123");
+        user.setName("abc");
+
+        MqDto mqDto = new MqDto(Constant.MQ_TYPE_ONE, user);
+        mqsender.send(mqDto);
         return "success";
     }
 
