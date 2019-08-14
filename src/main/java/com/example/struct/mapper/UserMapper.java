@@ -3,7 +3,6 @@ package com.example.struct.mapper;
 import com.example.struct.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -13,5 +12,11 @@ public interface UserMapper {
 
     List<User> selectNowBirthDay();
 
-    void insertUser(User user);
+    int insertUser(User user);
+
+    int insertBatch(List<User> users);
+
+    User selectByIdAndName(String id, String name);
+
+    int updateUserById(User user);
 }

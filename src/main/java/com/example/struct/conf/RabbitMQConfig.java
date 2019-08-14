@@ -11,17 +11,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitMQConfig {
-
-    private static final String HELLO_MQ_KEY = Constant.LOCAL_COMMON_QUEUE;
-
+    /* 定义队列 */
     @Bean
     public Queue helloQueue() {
-        return new Queue(HELLO_MQ_KEY);
+        return new Queue(Constant.LOCAL_COMMON_QUEUE);
     }
-
-    @Bean
-    public Binding bindingHelloQueue(Queue helloQueue) {
-        return BindingBuilder.bind(helloQueue).to(DirectExchange.DEFAULT).with(HELLO_MQ_KEY);
-    }
-    
 }

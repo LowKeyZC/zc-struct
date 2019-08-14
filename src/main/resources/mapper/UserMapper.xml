@@ -11,7 +11,7 @@
     </resultMap>
 
     <select id="selectById" resultMap="UserResult" parameterType="String">
-        SELECT * FROM user WHERE id = #{id}
+        SELECT * FROM user WHERE id = #{id} LOCK IN SHARE MODE
     </select>
 
     <select id="selectNowBirthDay" resultMap="UserResult" parameterType="Date">
@@ -21,5 +21,25 @@
     <insert id="insertUser" parameterType="com.example.struct.domain.User">
         INSERT INTO user (id, name, age, birthday) VALUES (#{id}, #{name}, #{age},#{birthday});
     </insert>
+
+    <insert id="insertBatch" parameterType="com.example.struct.domain.User">
+        insert into user (id,name,age,birthday) values 
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.name},
+            #{item.age},
+            #{item.birthday}
+            )
+        </foreach>
+    </insert>
+    
+    <select id="selectByIdAndName" resultMap="UserResult" parameterType="String">
+        select * from user where id = #{id} and name = #{name}
+    </select>
+
+    <update id="updateUserById" parameterType="com.example.struct.domain.User">
+        update user set name = #{name},birthday = #{birthday} where id = #{id}
+    </update>
 
 </mapper>

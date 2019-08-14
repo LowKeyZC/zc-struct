@@ -1,6 +1,6 @@
 package com.example.struct.interceptor;
 
-import com.example.struct.util.PropertyUtils;
+import com.example.struct.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 接口请求验证拦截器
@@ -25,8 +21,7 @@ public class ValidateConfigurerAdapter implements WebMvcConfigurer {
 
 	private static Logger logger = LoggerFactory.getLogger(ValidateConfigurerAdapter.class);
 
-
-	private static final String VALID_TOKEN= PropertyUtils.getString("valid-token");
+	private static final String VALID_TOKEN= CommonUtil.getProperty("valid-token");
 
 	/**
 	 * 增加拦截URL的请求内容

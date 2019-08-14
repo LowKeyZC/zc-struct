@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class StructApplication {
 
 	public static void main(String[] args) {
-		ApplicationContext applicationContext = SpringApplication.run(StructApplication.class, args);
+		SpringApplication.run(StructApplication.class, args);
 	}
 
 }

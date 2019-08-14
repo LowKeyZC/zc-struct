@@ -22,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RedisClientTool {
 
+    public static String DEFAULT_DOMAIN;
+
     /**
      * 个业务连接池存储器
      */
@@ -39,7 +41,7 @@ public class RedisClientTool {
             /*
               默认业务jedis
              */
-            String defaultDomain = prop.getProperty("defaultDomain");
+            DEFAULT_DOMAIN = prop.getProperty("defaultDomain");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -154,6 +156,12 @@ public class RedisClientTool {
         }
     }
 
+    public static boolean setnx(String domain, String key, String value) {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
+            return jedis.setnx(key,value) == 1L;
+        }
+    }
+
     /**
      * 判断是否存在
      * <p>
@@ -258,7 +266,7 @@ public class RedisClientTool {
         ShardedJedis jedis = getJedisPool(domain).getResource();
         ObjectInputStream objectInputStream = null;
         try {
-            byte[] data = jedis.get(key.getBytes("UTF-8"));
+            byte[] data = jedis.get(key.getBytes(StandardCharsets.UTF_8));
             if (data == null) {
                 return null;
             }
@@ -601,6 +609,32 @@ public class RedisClientTool {
     }
 
     /**
+     * 校验是否是集合中元素
+     * @param domain
+     * @param key
+     * @param member
+     * @return
+     */
+    public static boolean sismember(String domain, String key, String member) {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
+            return jedis.sismember(key, member);
+        }
+    }
+
+    /**
+     * 集合中添加元素
+     * @param domain
+     * @param key
+     * @param member
+     * @return
+     */
+    public static Long sadd(String domain, String key, String... member) {
+        try (ShardedJedis jedis = getJedisPool(domain).getResource()) {
+            return jedis.sadd(key, member);
+        }
+    }
+
+    /**
      * 不支持的命令实现的接口
      */
     public static interface Command {
@@ -652,7 +686,7 @@ public class RedisClientTool {
 
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 20; i++) {
-            Thread thread = new Thread(() -> System.out.println(Thread.currentThread().getName()+" "+distributeLock(RedisDomainEnum.MYDOMAIN.getName(),StringUtils.getRandomId())));
+            Thread thread = new Thread(() -> System.out.println(Thread.currentThread().getName()+" "+distributeLock(RedisDomainEnum.MYDOMAIN.getName(), RandomUtil.getUuId())));
             thread.start();
             Thread.sleep(100);
         }

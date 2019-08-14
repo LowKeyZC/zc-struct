@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-    <settings>
-        <!-- 打印查询语句 -->
+    <!--<settings>
+        &lt;!&ndash; 打印查询语句 &ndash;&gt;
         <setting name="logImpl" value="STDOUT_LOGGING" />
-    </settings>
+    </settings>-->
 </configuration>

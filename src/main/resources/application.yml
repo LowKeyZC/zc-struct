@@ -28,20 +28,35 @@ spring:
 
   datasource:
     master:
-      jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT
+      jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT&useAffectedRows=true
       username: root
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
     slave1:
-      jdbc-url: jdbc:mysql://localhost:3306/test-slave?serverTimezone=GMT
+      jdbc-url: jdbc:mysql://localhost:3306/test-slave?serverTimezone=GMT&useAffectedRows=true
       username: root   # 只读账户
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
     slave2:
-      jdbc-url: jdbc:mysql://localhost:3306/test-slave1?serverTimezone=GMT
+      jdbc-url: jdbc:mysql://localhost:3306/test-slave1?serverTimezone=GMT&useAffectedRows=true
       username: root   # 只读账户
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
-
-#MQ消息队列
-#hello_mq_key: hello_mq_key
+  # 邮件发送
+  mail:
+    host: smtp.qq.com
+    username: 289894539@qq.com
+    password: jwozcojtomssbibf
+    default-encoding: UTF-8
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          socketFactor:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+            fallback: false
+          auth: true
+        debug: true

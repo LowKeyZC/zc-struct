@@ -2,20 +2,13 @@ package com.example.struct.schedule;
 
 import com.example.struct.enums.RedisDomainEnum;
 import com.example.struct.util.RedisClientTool;
-import com.example.struct.util.StringUtils;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import com.example.struct.util.RandomUtil;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -54,23 +47,25 @@ public class QuartzService {
      * 通过redis分布式锁实现定时任务只执行一次
      * @throws InterruptedException
      */
-    @Scheduled(cron = "0/3 * * * * ?") //每隔3秒触发一次
+//    @Scheduled(cron = "0/50 * * * * ?") //每隔50秒触发一次
     public void task01() throws InterruptedException{
         System.out.println("=====进入task01");
-        String requestId = StringUtils.getRandomId();
+        String requestId = RandomUtil.getUuId();
         System.out.println("requestId="+requestId);
         if (RedisClientTool.distributeLock(RedisDomainEnum.MYDOMAIN.getName(), requestId)) {
-
             System.out.println("=====task01抢到锁");
-
             System.out.println("nowTime=" + new Date() + "--task01执行任务");
             Thread.sleep(100);
-
             RedisClientTool.releaseLock(RedisDomainEnum.MYDOMAIN.getName(),requestId);
             System.out.println("=====task01释放锁");
         } else {
             System.out.println("抢锁失败！");
         }
+    }
+
+    @Scheduled(cron = "0 0/2 * * * ?")
+    public void test02() {
+        System.out.println("time=" + new Date());
     }
 
     /**
@@ -90,6 +85,13 @@ public class QuartzService {
         @Override
         public void run() {
             System.out.println("动态定时任务运行实例2,time=" + new Date());
+        }
+    }
+
+    public static class DelayTask1 implements Runnable {
+        @Override
+        public void run() {
+            System.out.println("delaytask:" + new Date());
         }
     }
 
