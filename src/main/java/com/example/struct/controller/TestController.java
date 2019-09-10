@@ -1,35 +1,63 @@
 package com.example.struct.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.example.struct.annotation.Log;
+import com.example.struct.domain.User;
+import com.example.struct.enums.DBTypeEnum;
 import com.example.struct.rabbitmq.sender.HelloSender;
+import com.example.struct.result.ZcResult;
 import com.example.struct.service.UserService;
 import com.example.struct.util.MailUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "test")
 public class TestController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 
-    @Resource
-    private HelloSender mqsender;
-    @Resource
-    private UserService userService;
-    @Resource
-    private MailUtil mailUtil;
+  @Resource
+  private HelloSender mqsender;
+  @Resource
+  private UserService userService;
+  @Resource
+  private MailUtil mailUtil;
+  @Value("${server.port}")
+  private Integer serverPort;
 
-    @RequestMapping(value = "test01")
-    public String test01(String params) throws InterruptedException {
-        System.out.println(new Date());
-        Thread.sleep(10000);
-        System.out.println(new Date());
-        return "success";
-    }
+  @Log
+  @RequestMapping(value = "test01")
+  public ZcResult test01(String params, String params2) throws InterruptedException {
+    System.out.println("当前端口：" + serverPort);
+    return ZcResult.success("当前端口：" + serverPort);
+  }
+
+  public static void main(String[] args) {
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    executorService.execute(new Runnable() {
+      int i = 0;
+      @Override
+      public void run() {
+        for (; ; ) {
+          System.out.println(++i);
+          Map map = new HashMap();
+        }
+      }
+    });
+  }
+
 
 }

@@ -382,20 +382,8 @@ public final class HttpUtilHelper {
   }
 
   public static void main(String[] args) {
-    String url = "http://caiwu.fuyoukache.com/api/customer/checkorder/getAllCheckOrder.do";
-    List<Entry<String, String>> header = new ArrayList(1);
-    Entry<String, String> cookie = new SimpleEntry("Cookie", "fytoken=dc7e109c02b915583472a34e08e68c95; expires=Thu, 17 Aug 2017 13:14:34 GMT; path=/; domain=caiwu.fuyoukache.com");
-    header.add(0, cookie);
-    HttpUtilHelper helper = new HttpUtilHelper(1, 1);
-    JSONObject j = new JSONObject();
-    JSONArray ja = new JSONArray();
-    JSONObject jj = new JSONObject();
-    jj.put("url", "/v3/geocode/geo?key=7b57f70bb2de1f1a4ba5fd611bb03273&address=广东省深圳市龙岗区南湾街道白李路30号旗丰国际电子产业园&city=深圳市");
-    ja.add(jj);
-    j.put("ops", ja);
-    System.out.println(j.toJSONString());
-    url = "http://restapi.amap.com/v3/batch?key=7b57f70bb2de1f1a4ba5fd611bb03273";
-    ResultStatus s = helper.httpJsonPost(url, j.toJSONString());
-    System.out.println(s.getStrResponse());
+    String url = "http://www.baidu.com";
+    ResultStatus s = new HttpUtilHelper().httpJsonPost(url,"aaa",true);
+    System.out.println(s.toString());
   }
 }

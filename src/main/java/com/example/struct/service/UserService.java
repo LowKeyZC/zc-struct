@@ -5,7 +5,6 @@ import com.example.struct.annotation.Master;
 import com.example.struct.domain.User;
 import com.example.struct.mapper.UserMapper;
 import com.example.struct.util.RandomUtil;
-import com.example.struct.util.RedisClientTool;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +15,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class UserService {
@@ -31,34 +32,43 @@ public class UserService {
         return userMapper.selectNowBirthDay();
     }
 
-    public void insertUser(User user) {
-        userMapper.insertUser(user);
+    public int insertUser(User user) {
+        return userMapper.insertUser(user);
     }
 
     public int updateUserById(User user) {
         return userMapper.updateUserById(user);
     }
 
-//    @Transactional
+    @Transactional
     public void test01(String id) throws InterruptedException {
-        for (int j = 0; j < 10; j++) {
-            List<User> users = new ArrayList<>();
-            for (int i = 0; i < 10000; i++) {
-                User user = new User();
-                user.setId(RandomUtil.getUuId());
-                user.setName("小小");
-                user.setBirthday(new Date());
-                user.setAge(12);
-                users.add(user);
+        User user1 = new User();
+        user1.setId(RandomUtil.getUuId());
+        user1.setName("小小");
+        User user2 = new User();
+        user2.setId(RandomUtil.getUuId());
+        user2.setName("小小");
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.submit(() -> {
+            try {
+                int a = insertUser(user1);
+                System.out.println("user1 a = " + a);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            int re = userMapper.insertBatch(users);
-            if (re == users.size()) {
-                System.out.println("插入成功");
-                continue;
+        });
+        executorService.submit(() -> {
+            try {
+                int a = insertUser(user2);
+                System.out.println("user2 a = " + a);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            System.out.println("插入失败");
-        }
+        });
     }
+
+
+
 
     @Transactional
     public void test02(String id) {

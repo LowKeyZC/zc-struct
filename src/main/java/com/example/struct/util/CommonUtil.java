@@ -55,4 +55,19 @@ public class CommonUtil {
     }
     return true;
   }
+
+  /**
+   * ListToMap
+   */
+  public static <T> Map<Object, T> listToMap(String methodName, Collection<T> list) {
+    Map<Object,T> map = new HashMap<>();
+    try {
+      for (T t : list) {
+        map.put(t.getClass().getMethod(methodName).invoke(t), t);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return map;
+  }
 }

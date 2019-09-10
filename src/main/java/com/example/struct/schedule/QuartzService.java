@@ -1,7 +1,6 @@
 package com.example.struct.schedule;
 
 import com.example.struct.enums.RedisDomainEnum;
-import com.example.struct.util.RedisClientTool;
 import com.example.struct.util.RandomUtil;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -45,9 +44,9 @@ public class QuartzService {
 
     /**
      * 通过redis分布式锁实现定时任务只执行一次
-     * @throws InterruptedException
+     * 每隔900秒触发一次
      */
-//    @Scheduled(cron = "0/50 * * * * ?") //每隔50秒触发一次
+    /*@Scheduled(cron = "0/900 * * * * ?")
     public void task01() throws InterruptedException{
         System.out.println("=====进入task01");
         String requestId = RandomUtil.getUuId();
@@ -61,7 +60,7 @@ public class QuartzService {
         } else {
             System.out.println("抢锁失败！");
         }
-    }
+    }*/
 
     @Scheduled(cron = "0 0/2 * * * ?")
     public void test02() {

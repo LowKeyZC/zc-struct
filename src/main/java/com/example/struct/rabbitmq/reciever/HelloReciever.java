@@ -3,16 +3,15 @@ package com.example.struct.rabbitmq.reciever;
 import com.alibaba.fastjson.JSON;
 import com.example.struct.common.Constant;
 import com.example.struct.common.MqDto;
-import com.example.struct.util.CommonUtil;
 import com.example.struct.util.RandomUtil;
-import com.example.struct.util.RedisClientTool;
+import com.example.struct.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import static com.example.struct.util.RedisClientTool.DEFAULT_DOMAIN;
+import javax.annotation.Resource;
 
 /**
  * 消费消息
@@ -23,15 +22,18 @@ public class HelloReciever {
 	private static final Logger logger = LoggerFactory.getLogger(HelloReciever.class);
 	private static final String MQ_MSG_KEYS = "MQ_MSG_KEY";
 
+	@Resource
+	private RedisUtil redisUtil;
+
 	@RabbitHandler
 	public void process(String mqDtoStr) {
 		logger.info("消费队列：" + Constant.LOCAL_COMMON_QUEUE + "正在消费");
 		String msgMd5Key = MQ_MSG_KEYS + RandomUtil.getMd5Str(mqDtoStr);
-		if (!RedisClientTool.setnx(DEFAULT_DOMAIN, msgMd5Key, "1")) {
+		if (!redisUtil.setnx(msgMd5Key, "1")) {
 			logger.error("mq 重复消费 msg:{}", mqDtoStr);
 			return;
 		}
-		RedisClientTool.expire(DEFAULT_DOMAIN, msgMd5Key, 100);
+		redisUtil.expire(msgMd5Key, 100);
 		logger.info("mq 成功消费 msg:{}", mqDtoStr);
 
 		try {
@@ -45,22 +47,6 @@ public class HelloReciever {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) throws InterruptedException {
-		String mqDtoStr = "aaa";
-		String msgMd5Key = MQ_MSG_KEYS + RandomUtil.getMd5Str(mqDtoStr);
-
-		for (int i = 0; i < 40; i++) {
-			Thread.sleep(1000);
-			System.out.println("i = " + i);
-			if (!RedisClientTool.setnx(DEFAULT_DOMAIN, msgMd5Key, "1")) {
-				logger.error("mq 重复消费 msg:{}", mqDtoStr);
-				continue;
-			}
-			RedisClientTool.expire(DEFAULT_DOMAIN, msgMd5Key, 10);
-			logger.info("mq 成功消费 msg:{}", mqDtoStr);
 		}
 	}
 }

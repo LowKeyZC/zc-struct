@@ -2,6 +2,7 @@ package com.example.struct.util;
 
 import com.alibaba.fastjson.util.IOUtils;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -18,7 +19,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -27,6 +33,22 @@ import java.util.Map;
 
 public class FileUtil {
   private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
+
+  public static void main(String[] args) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
+//    System.out.println(URLEncoder.encode("https://public.fuyoukache" +
+//        ".com/d2507024-50f1-44bd-909e-762780bb7578---2.png .jpg", "UTF-8").replaceAll("\\+", "%20"));
+//    System.out.println(getUrlFileByteArr("https://public.fuyoukache.com/d2507024-50f1-44bd-909e-762780bb7578---2.png .jpg").length);
+//    System.out.println(getUrlFileByteArr("https://public.fuyoukache" +
+//        ".com/d2507024-50f1-44bd-909e-762780bb7578---2.png%20.jpg").length);
+//    getUrlFileByteArr("https%3A%2F%2Fpublic.fuyoukache" +
+//        ".com%2Fd2507024-50f1-44bd-909e-762780bb7578---2.png%20.jpg");
+
+    String urlStr = "https://public.fuyoukache.com/d2507024-50f1-44bd-909e-762780bb7578---2.png .jpg";
+    URL url = new URL(urlStr);
+    URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+    url = uri.toURL();
+    System.out.println(url.toString());
+  }
 
   /**
    * 网络文件地址获取字节数组
