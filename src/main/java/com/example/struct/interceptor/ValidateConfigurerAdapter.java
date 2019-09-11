@@ -1,6 +1,7 @@
 package com.example.struct.interceptor;
 
 import com.example.struct.util.CommonUtil;
+import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -20,29 +21,30 @@ import javax.servlet.http.HttpServletResponse;
 public class ValidateConfigurerAdapter implements WebMvcConfigurer {
 
 	private static Logger logger = LoggerFactory.getLogger(ValidateConfigurerAdapter.class);
-
+	/* 令牌桶限流器 100permits/s */
+	private static RateLimiter rateLimiter = RateLimiter.create(80);
 	private static final String VALID_TOKEN= CommonUtil.getProperty("valid-token");
 
 	/**
-	 * 增加拦截URL的请求内容
-	 * @param registry
+	 * 拦截器 token校验 限流
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new HandlerInterceptor() {
 			@Override
-			public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+			public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
+				rateLimiter.acquire(1);
 				httpServletResponse.setCharacterEncoding("utf-8");
 				String validToken = httpServletRequest.getHeader("valid-token");
 				return !StringUtils.isEmpty(validToken) && validToken.equals(VALID_TOKEN);
 			}
 
 			@Override
-			public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+			public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) {
 			}
 
 			@Override
-			public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
+			public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
 			}
 		});
 	}

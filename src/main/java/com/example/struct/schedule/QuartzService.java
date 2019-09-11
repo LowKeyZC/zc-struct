@@ -1,10 +1,13 @@
 package com.example.struct.schedule;
 
+import com.example.struct.common.Constant;
 import com.example.struct.enums.RedisDomainEnum;
 import com.example.struct.util.RandomUtil;
+import com.example.struct.util.RedisUtil;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +41,8 @@ import java.util.concurrent.ScheduledFuture;
  */
 @Component
 public class QuartzService {
+    @Resource
+    private RedisUtil redisUtil;
 
     // 动态定时任务运行结果Map,用于根据任务名动态停止定时任务
     public static Map<String, ScheduledFuture> scheduledFutureMap = new HashMap<>();
@@ -46,21 +51,24 @@ public class QuartzService {
      * 通过redis分布式锁实现定时任务只执行一次
      * 每隔900秒触发一次
      */
-    /*@Scheduled(cron = "0/900 * * * * ?")
-    public void task01() throws InterruptedException{
+    //@Scheduled(cron = "0/3 * * * * ?")
+    public void task01() {
         System.out.println("=====进入task01");
-        String requestId = RandomUtil.getUuId();
-        System.out.println("requestId="+requestId);
-        if (RedisClientTool.distributeLock(RedisDomainEnum.MYDOMAIN.getName(), requestId)) {
-            System.out.println("=====task01抢到锁");
-            System.out.println("nowTime=" + new Date() + "--task01执行任务");
-            Thread.sleep(100);
-            RedisClientTool.releaseLock(RedisDomainEnum.MYDOMAIN.getName(),requestId);
-            System.out.println("=====task01释放锁");
+        if (redisUtil.tryLock(Constant.LOCK_1, 600)) {
+            try {
+                System.out.println(new Date() + "=====task01抢到锁");
+                System.out.println("nowTime=" + new Date() + "--task01执行任务");
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                redisUtil.releaseLock(Constant.LOCK_1);
+                System.out.println("=====task01释放锁");
+            }
         } else {
-            System.out.println("抢锁失败！");
+            System.out.println(new Date() + "抢锁失败！");
         }
-    }*/
+    }
 
     @Scheduled(cron = "0 0/2 * * * ?")
     public void test02() {

@@ -8,7 +8,9 @@ import com.example.struct.enums.DBTypeEnum;
 import com.example.struct.rabbitmq.sender.HelloSender;
 import com.example.struct.result.ZcResult;
 import com.example.struct.service.UserService;
+import com.example.struct.util.HttpUtilHelper;
 import com.example.struct.util.MailUtil;
+import com.example.struct.util.ResultStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,20 +47,4 @@ public class TestController {
     System.out.println("当前端口：" + serverPort);
     return ZcResult.success("当前端口：" + serverPort);
   }
-
-  public static void main(String[] args) {
-    ExecutorService executorService = Executors.newFixedThreadPool(1);
-    executorService.execute(new Runnable() {
-      int i = 0;
-      @Override
-      public void run() {
-        for (; ; ) {
-          System.out.println(++i);
-          Map map = new HashMap();
-        }
-      }
-    });
-  }
-
-
 }

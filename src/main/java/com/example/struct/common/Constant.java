@@ -12,4 +12,7 @@ public class Constant {
     /* dynamic task */
     public static final String DYNAMIC_TASK1 = "DYNAMIC_TASK1";
     public static final String DYNAMIC_TASK2 = "DYNAMIC_TASK2";
+
+    /* lock key */
+    public static final String LOCK_1 = "lock-1";
 }
