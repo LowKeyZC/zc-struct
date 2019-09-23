@@ -19,4 +19,6 @@ public interface UserMapper {
     User selectByIdAndName(String id, String name);
 
     int updateUserById(User user);
+
+    int updateBatchName(List<User> users);
 }

@@ -1,9 +1,12 @@
 package com.example.struct.schedule;
 
 import com.example.struct.common.Constant;
+import com.example.struct.enums.EnumDefine;
+import com.example.struct.enums.EnumDefine.DynamicTask;
 import com.example.struct.enums.RedisDomainEnum;
 import com.example.struct.util.RandomUtil;
 import com.example.struct.util.RedisUtil;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+
+import static com.example.struct.enums.EnumDefine.DynamicTask.TASK_2;
 
 /**
  * 配置说明:https://www.cnblogs.com/linjiqin/archive/2013/07/08/3178452.html
@@ -51,7 +56,7 @@ public class QuartzService {
      * 通过redis分布式锁实现定时任务只执行一次
      * 每隔900秒触发一次
      */
-    //@Scheduled(cron = "0/3 * * * * ?")
+//    @Scheduled(cron = "0/3 * * * * ?")
     public void task01() {
         System.out.println("=====进入task01");
         if (redisUtil.tryLock(Constant.LOCK_1, 600)) {
@@ -68,11 +73,6 @@ public class QuartzService {
         } else {
             System.out.println(new Date() + "抢锁失败！");
         }
-    }
-
-    @Scheduled(cron = "0 0/2 * * * ?")
-    public void test02() {
-        System.out.println("time=" + new Date());
     }
 
     /**
@@ -92,6 +92,19 @@ public class QuartzService {
         @Override
         public void run() {
             System.out.println("动态定时任务运行实例2,time=" + new Date());
+        }
+    }
+
+    public static Runnable initRunnable(String taskName) {
+        DynamicTask task = EnumUtils.getEnum(DynamicTask.class, taskName);
+        /* 任务方法映射 */
+        switch (task) {
+            case TASK_1:
+                return new MyRunnable1();
+            case TASK_2:
+                return new MyRunnable2();
+            default:
+                return null;
         }
     }
 

@@ -44,7 +44,15 @@ public class TestController {
   @Log
   @RequestMapping(value = "test01")
   public ZcResult test01(String params, String params2) throws InterruptedException {
-    System.out.println("当前端口：" + serverPort);
-    return ZcResult.success("当前端口：" + serverPort);
+    LOGGER.info("进入请求test01");
+    TimeUnit.SECONDS.sleep(1);
+    return ZcResult.success();
+  }
+
+  @Log
+  @RequestMapping(value = "test02")
+  public ZcResult test02(String params, String params2) {
+    LOGGER.info("进入请求test02");
+    return ZcResult.success();
   }
 }

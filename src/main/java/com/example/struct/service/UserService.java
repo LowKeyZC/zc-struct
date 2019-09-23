@@ -67,9 +67,6 @@ public class UserService {
         });
     }
 
-
-
-
     @Transactional
     public void test02(String id) {
         User user = userMapper.selectById(id);
@@ -81,6 +78,10 @@ public class UserService {
             return;
         }
         System.out.println("修改失败");
+    }
+
+    public void updateBatchName(List<User> users) {
+        userMapper.updateBatchName(users);
     }
 
     public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {

@@ -14,4 +14,11 @@ public class User {
     public void test() {
         System.out.println("invoke method test");
     }
+
+    public static void main(String[] args) {
+        User user = new User();
+        user.setName("aaa");
+        user.setId("!23");
+        System.out.println(user.toString());
+    }
 }

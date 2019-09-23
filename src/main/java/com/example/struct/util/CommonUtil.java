@@ -1,6 +1,10 @@
 package com.example.struct.util;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.poi.excel.ExcelReader;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 
@@ -8,7 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,5 +76,35 @@ public class CommonUtil {
       e.printStackTrace();
     }
     return map;
+  }
+
+  public static void main(String[] args) {
+    /*int zeroNum = 0;
+    for (String id : TempContant.idCardNos) {
+      int age = IdcardUtils.getAgeByIdCard(id);
+      System.out.println("id:" + id + " 周岁:" + age);
+      if (age == 0) zeroNum++;
+    }
+    System.out.println(TempContant.idCardNos.length + " " + zeroNum);*/
+    /*Integer a = 1;
+    Integer b = 2;
+    a.equals(b);
+    System.out.println();*/
+    StringBuilder total = new StringBuilder();
+
+    ExcelReader reader = new ExcelReader("D:\\work\\6 司机运费贷优化_进项税_其他\\云信银行卡映射表-技术用.xlsx", 0);
+    List<List<Object>> contents = reader.read();
+    for (int i = 1; i < contents.size(); i++) {
+      List<Object> rowContent = contents.get(i);
+      StringBuilder sb = new StringBuilder("INSERT INTO fuyou_bank_map(fuyouBankName,thirdBankName," +
+          "thirdType,thirdCode,stdBankCode)VALUES(");
+      sb.append("'").append(rowContent.get(3)).append("',");
+      sb.append("'").append(rowContent.get(1)).append("',");
+      sb.append(1).append(",");
+      sb.append("'").append(rowContent.get(0)).append("',");
+      sb.append("'").append(rowContent.get(2)).append("');\n");
+      total.append(sb);
+    }
+    System.out.println(total.toString());
   }
 }

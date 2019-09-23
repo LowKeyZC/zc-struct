@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * ribbit mq 配置
  */
-@Configuration
+//@Configuration
 public class RabbitMQConfig {
     /* 定义队列 */
     @Bean

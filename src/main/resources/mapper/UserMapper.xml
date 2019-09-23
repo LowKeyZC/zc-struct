@@ -42,4 +42,18 @@
         update user set name = #{name},birthday = #{birthday} where id = #{id}
     </update>
 
+    <update id="updateBatchName">
+        update user set
+        `name` =
+        <foreach collection="list" item="item" index="index" separator=" " open="case id" close="end">
+            when #{item.id} then
+            #{item.name}
+        </foreach>
+        where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+
 </mapper>

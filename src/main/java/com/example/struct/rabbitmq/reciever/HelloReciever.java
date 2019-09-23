@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * 消费消息
  */
 @Component
-@RabbitListener(queues = Constant.LOCAL_COMMON_QUEUE)
+//@RabbitListener(queues = Constant.LOCAL_COMMON_QUEUE)
 public class HelloReciever {
 	private static final Logger logger = LoggerFactory.getLogger(HelloReciever.class);
 	private static final String MQ_MSG_KEYS = "MQ_MSG_KEY";
@@ -25,7 +25,7 @@ public class HelloReciever {
 	@Resource
 	private RedisUtil redisUtil;
 
-	@RabbitHandler
+//	@RabbitHandler
 	public void process(String mqDtoStr) {
 		logger.info("消费队列：" + Constant.LOCAL_COMMON_QUEUE + "正在消费");
 		String msgMd5Key = MQ_MSG_KEYS + RandomUtil.getMd5Str(mqDtoStr);

@@ -1,5 +1,6 @@
 package com.example.struct.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.io.FileInputStream;
@@ -10,7 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,6 +29,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -381,9 +390,22 @@ public final class HttpUtilHelper {
     return pools.toString();
   }
 
-  public static void main(String[] args) {
-    String url = "http://www.baidu.com";
-    ResultStatus s = new HttpUtilHelper().httpJsonPost(url,"aaa",true);
-    System.out.println(s.toString());
+  /**
+   * 简单异步请求
+   */
+  public static void asynSimpleGet(String url, String callbackUrl) {
+    ExecutorService service = Executors.newCachedThreadPool();
+    service.submit(() -> {
+      ResultStatus resultStatus = new HttpUtilHelper().httpGet(url);
+      System.out.println(resultStatus.getStrResponse());
+      if (resultStatus.isSuccess()) new HttpUtilHelper().httpGet(callbackUrl);
+    });
+  }
+
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+    String url = "http://localhost:8080/zc-struct/test/test01";
+    ResultStatus status =
+        new HttpUtilHelper(200, 40, 120, 120, 500, 500, (SSLContext)null).httpGet(url);
+    System.out.println(status.getStrResponse());
   }
 }

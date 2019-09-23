@@ -42,6 +42,21 @@ public enum ResultEnum {
      */
     TaskStarted("1005", "任务已经启动了"),
 
+    /**
+     * token错误
+     */
+    ERROR_TOKEN("1006", "TOKEN错误"),
+
+    /**
+     * token错误
+     */
+    ERROR_CRON("1007", "非法CRON"),
+
+    /**
+     * token错误
+     */
+    NOTFOUND_TASK("1008", "未找到任务"),
+
     ;
 
     private String code;
